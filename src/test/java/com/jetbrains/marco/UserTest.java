@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @ExtendWith(MockitoExtension.class)
 class UserTest {
 
-    @Mock
+    //@Mock
     User user;
 
     @BeforeEach
