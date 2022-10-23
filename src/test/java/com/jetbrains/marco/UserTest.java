@@ -5,12 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.jetbrains.util.Resources;
 import com.jetbrains.util.Xml;
+
 import lombok.extern.java.Log;
+
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-
-
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.xmlunit.assertj.XmlAssert;
 
 import java.time.LocalDate;
@@ -19,13 +22,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Log
-public class UserTest {
+@Tag("integration")
+@ExtendWith(MockitoExtension.class)
+class UserTest {
 
+    @Mock
     User user;
 
     @BeforeEach
     void setUp() {
-        user = new User("Paul", 56, false, LocalDate.now().minusYears(56));
+        //user = new User("Paul", 56, false, LocalDate.now().minusYears(56));
         log.info("setUp Called..");
 
 
@@ -50,13 +56,13 @@ public class UserTest {
 
         assertThatJson(user).isEqualTo("{\"name\":\"Paul\",\"age\":56,\"blocked\":false,\"birthDate\":[1966, 10, 23]}");
 
-        XmlAssert.assertThat( "<a><b attr=\"abc\"></b></a>").nodesByXPath("//a/b/@attr").exist();
+        XmlAssert.assertThat("<a><b attr=\"abc\"></b></a>").nodesByXPath("//a/b/@attr").exist();
     }
 
     @ParameterizedTest
     //@ValueSource(ints = {20, 50 , 80})
     @CsvFileSource(resources = "/friends.csv", numLinesToSkip = 1)
-    //@EnumSource(name of enum)
+        //@EnumSource(name of enum)
     void all_friends_must_be_18(String name, int age) {
         log.info(age + " " + name);
         assertThat(age).isGreaterThanOrEqualTo(18);
